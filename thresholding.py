@@ -21,7 +21,7 @@ def SelectImage()->str:
  return file_path
 
 #plotting an image
-def Subplot(image1=None,image2=None,cmap1=None,cmap2=None):
+def Subplot(image1=None,image2=None,cmap1=None,cmap2=None,title1="Image-1",title2="Image-2"):
 
    if image1 is None:
     f_image1=SelectImage()
@@ -38,14 +38,25 @@ def Subplot(image1=None,image2=None,cmap1=None,cmap2=None):
 
    plt.subplot(1,2,1)
    plt.imshow(image1,cmap=cmap1)
-   plt.title("Image 1")
+   plt.title(title1)
 
    plt.subplot(1,2,2)
    plt.imshow(image2,cmap=cmap2)
-   plt.title("Image 2")
+   plt.title(title2)
 
    plt.show()
 
+def AddNoise(image1=None):
+  if image1 is None:
+     f_image1=SelectImage()
+     image1=cv.imread(f"{f_image1}")
+     if image1 is None:
+           raise FileNotFoundError(f"Could not read image: {f_image1}")
+     image1=cv.cvtColor(image1,cv.COLOR_BGR2RGBA)
+
+
+
+## main Execution 
 file_path = SelectImage()
 image = cv.imread(file_path,cv.IMREAD_GRAYSCALE)
 
@@ -92,8 +103,8 @@ noise=np.random.normal(0,40,image.shape)
 noiseImage=image+noise
 noiseImage=np.clip(noiseImage,0,255).astype(np.uint8)
 
-Subplot(image,noiseImage,'gray','gray')
+Subplot(image,noiseImage,'gray','gray',"Original","Noisy image")
 
 ret,o_thr=cv.threshold(noiseImage,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
 
-Subplot(noiseImage,o_thr,'gray','gray')
+Subplot(noiseImage,o_thr,'gray','gray',"Noisy image","Otsu's thresholding")
