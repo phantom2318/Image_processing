@@ -1,7 +1,9 @@
 import numpy as np
 import cv2 as cv
-from tkinter import Tk,filedialog
 import matplotlib.pyplot as plt
+from PIL import Image
+from tkinter import Tk,filedialog
+
 #Select an image from Device
 def SelectImage()->str:
  root=Tk()
@@ -49,40 +51,27 @@ def Subplot(image1=None,image2=None,cmap1=None,cmap2=None,title1="Image-1",title
 
    plt.show()
 
-## Resizing the image.
-def Resize(image):
-  if image is None:
-    path=SelectImage()
-    image=cv.imread(path)
+###Drawing a line.
+def Line(image:np.ndarray)->np.ndarray:
+  thickness=int(input(("Enter the thickness of the line")))
+  start=(0,0)
+  end=(image.shape[1],image.shape[0])
+  image=cv.line(image,start,end,[255,0,0],thickness)
+  return image
 
-  if image is None:
-    raise FileNotFoundError("Could not read the selected image.")
-
-  fx=int(input("Enter the horizontal resizing factor:"))
-  fy=int(input("Enter the vertical resizing factor:"))
-
-  resized_image=cv.resize(image,None,fx=fx,fy=fy,interpolation=cv.INTER_AREA)
-  Subplot(image,resized_image)
-
-## Translation of image
-def Translation(image):
-  if image is None:
-    path=SelectImage()
-    image=cv.imread(path)
-
-  if image is None:
-    raise FileNotFoundError("Could not read the selected image.")
-
-  x=int(input("Enter the horizontal translation factor:"))
-  y=int(input("Enter the vertical translation factor:"))
-  Translation_matrix=np.array([[1,0,x],[0,1,y]],dtype=np.float32)
-
-  height, width = image.shape[:2]
-  Translated_image=cv.warpAffine(image,Translation_matrix,(width,height))
-  Subplot(image,Translated_image)
-
-#Main Execution
+###Drawing Rectangle
+def Rectangle(image: np.ndarray)->np.ndarray:
+    thickness=int(input(("Enter the thickness of the line")))
+    start=(0,0)
+    end=(50,100)
+    image=cv.rectangle(image,start,end,[255,0,0],thickness)
+    return image
 path=SelectImage()
 image=cv.imread(path)
-Resize(image)
-Translation(image)
+image=Line(image)
+cv.imshow('Lined',image)
+cv.waitKey(0)
+
+image=Rectangle(image)
+cv.imshow('Rectangled',image)
+cv.waitKey(0)
