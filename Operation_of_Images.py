@@ -13,7 +13,7 @@ def SelectImage()->str:
         ("All files", "*.*")
     ]
     )
- #if image is not selected.
+ #if image is not selected by the user
  if not file_path:
     print("No image selected.")
     exit()
@@ -28,17 +28,17 @@ def Subplot(image1=None,image2=None,cmap1=None,cmap2=None,title1="Image-1",title
 
     if image1 is None:
        raise FileNotFoundError(f"Could not read image: {f_image1}")
-
-   image1=cv.cvtColor(image1,cv.COLOR_BGR2RGBA)
+   if cmap1!="gray":
+    image1=cv.cvtColor(image1,cv.COLOR_BGR2RGB)
    if image2 is None:
      f_image2=SelectImage()
      image2=cv.imread(f"{f_image2}")
 
      if image2 is None:
        raise FileNotFoundError(f"Could not read image: {f_image2}")
-     
-   image2=cv.cvtColor(image2,cv.COLOR_BGR2RGBA)
-
+   if cmap1!="gray":
+    image2=cv.cvtColor(image2,cv.COLOR_BGR2RGB)
+   
    plt.subplot(1,2,1)
    plt.imshow(image1,cmap=cmap1)
    plt.title(title1)
@@ -50,7 +50,7 @@ def Subplot(image1=None,image2=None,cmap1=None,cmap2=None,title1="Image-1",title
    plt.show()
 
 ## Resizing the image.
-def Resize(image):
+def Resize(image: np.ndarray):
   if image is None:
     path=SelectImage()
     image=cv.imread(path)
@@ -65,7 +65,7 @@ def Resize(image):
   Subplot(image,resized_image)
 
 ## Translation of image
-def Translation(image):
+def Translation(image: np.ndarray):
   if image is None:
     path=SelectImage()
     image=cv.imread(path)
@@ -81,8 +81,46 @@ def Translation(image):
   Translated_image=cv.warpAffine(image,Translation_matrix,(width,height))
   Subplot(image,Translated_image)
 
+## Rotation of image
+
+def Rotation(image: np.ndarray):
+  dcn=float(input("Enter the angle of rotation"))
+  w,h=image.shape[0:2]
+  center=(h/2,w/2)
+  rotated_matrix=cv.getRotationMatrix2D(center,dcn,1)
+  rotated_image=cv.warpAffine(image,rotated_matrix,(w,h))
+  Subplot(image,rotated_image)
+
+## Flipping of image
+def Fliping(image: np.ndarray):
+  dcn=int(input("Enter the direction"))
+  flipped_image=cv.flip(image,dcn)
+  Subplot(image,flipped_image,title1="Original image",title2="Flipped image")
 #Main Execution
 path=SelectImage()
 image=cv.imread(path)
-Resize(image)
-Translation(image)
+if image is None:
+  raise FileNotFoundError(f"Could not read image: {path}")
+print("Enter the choice"
+"\n1.Resize--->1" 
+"\n2.translation of image--->2" 
+"\n3.Rotation--->3" 
+"\n4.Flipping--->4"
+"\n5.Exit--->5"
+)
+
+choice=None
+while(choice!=5):
+ choice=int(input("Enter the choice --->"))
+  
+ if choice==1:
+  Resize(image)
+ elif choice==2:
+  Translation(image)
+ elif choice==3:
+  Rotation(image) 
+ elif choice==4:
+  Fliping(image)
+ elif choice==5:
+   print("Bye....")
+   exit() 
