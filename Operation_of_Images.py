@@ -13,7 +13,7 @@ def SelectImage()->str:
         ("All files", "*.*")
     ]
     )
- #if image is not selected by the user
+ #if image is not selected.
  if not file_path:
     print("No image selected.")
     exit()
