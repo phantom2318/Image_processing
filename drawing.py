@@ -21,7 +21,11 @@ def SelectImage()->str:
     exit()
  return file_path
 
-#plotting an image
+## converting the image from BGR to RGB
+def show(img)->np.ndarray:
+    img=cv.cvtColor(img,cv.COLOR_BGR2RGB)
+    return img
+## plotting an image
 def Subplot(image1=None,image2=None,cmap1=None,cmap2=None,title1="Image-1",title2="Image-2"):
 
    if image1 is None:
@@ -30,16 +34,12 @@ def Subplot(image1=None,image2=None,cmap1=None,cmap2=None,title1="Image-1",title
 
     if image1 is None:
        raise FileNotFoundError(f"Could not read image: {f_image1}")
-
-   image1=cv.cvtColor(image1,cv.COLOR_BGR2RGBA)
    if image2 is None:
      f_image2=SelectImage()
      image2=cv.imread(f"{f_image2}")
 
      if image2 is None:
        raise FileNotFoundError(f"Could not read image: {f_image2}")
-     
-   image2=cv.cvtColor(image2,cv.COLOR_BGR2RGBA)
 
    plt.subplot(1,2,1)
    plt.imshow(image1,cmap=cmap1)
@@ -69,14 +69,17 @@ def Rectangle(image: np.ndarray)->np.ndarray:
     
 path=SelectImage()
 image=cv.imread(path)
-image=Line(image)
-cv.imshow('Lined',image)
-cv.waitKey(0)
+if image is None:
+  raise FileNotFoundError(f"Could not read image: {path}")
+Lined_image=image.copy()
+Lined_image=show(Lined_image)
+Lined_image=Line(Lined_image)
+Subplot(image,Lined_image,title1="Normal image",title2="Line drawn")
 
-image=Rectangle(image)
-cv.imshow('Rectangled',image)
-cv.waitKey(0)
-
+rectangled_image=image.copy()
+rectangled_image=cv.cvtColor(rectangled_image,cv.COLOR_BGR2RGB)
+rectangled_image=Rectangle(Lined_image)
+Subplot(image,rectangled_image,title1="Normal image",title2="Line drawn")
 points = []
 
 def onclick(event):
@@ -92,7 +95,7 @@ def onclick(event):
 
 fig, ax = plt.subplots()
 
+image=cv.cvtColor(image,cv.COLOR_BGR2RGB)
 ax.imshow(image)
 cid = fig.canvas.mpl_connect("button_press_event", onclick)
-
 plt.show()
