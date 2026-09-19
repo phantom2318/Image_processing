@@ -66,6 +66,7 @@ def Rectangle(image: np.ndarray)->np.ndarray:
     end=(50,100)
     image=cv.rectangle(image,start,end,[255,0,0],thickness)
     return image
+    
 path=SelectImage()
 image=cv.imread(path)
 image=Line(image)
@@ -75,3 +76,23 @@ cv.waitKey(0)
 image=Rectangle(image)
 cv.imshow('Rectangled',image)
 cv.waitKey(0)
+
+points = []
+
+def onclick(event):
+    if event.xdata is not None and event.ydata is not None:
+        points.append((int(event.xdata), int(event.ydata)))
+
+        if len(points) == 2:
+            x1, y1 = points[0]
+            x2, y2 = points[1]
+
+            ax.plot([x1, x2], [y1, y2])
+            fig.canvas.draw()
+
+fig, ax = plt.subplots()
+
+ax.imshow(image)
+cid = fig.canvas.mpl_connect("button_press_event", onclick)
+
+plt.show()
