@@ -18,6 +18,15 @@ def WeightedAddition(img1:np.ndarray,img2:np.ndarray):
  plt.imshow(Waddition)
  plt.show()
 
+def Substraction(img1: np.ndarray,img2: np.ndarray):
+  ipr.subplot(img1,img2,title1="image 1",title2="image 2")
+  substraction12=cv.subtract(img1,img2)
+  substraction21=cv.subtract(img2,img1)
+
+  substraction12=cv.cvtColor(substraction12,cv.COLOR_BGR2RGB)
+  substraction21=cv.cvtColor(substraction21,cv.COLOR_BGR2RGB)
+
+  ipr.subplot(substraction12,substraction21,title1="img`1`-img`2`",title2="img`2`-img`1`")
 path1=ipr.select_image()
 path2=ipr.select_image()
 
@@ -34,3 +43,4 @@ img2 = cv.resize(img2, (1000, 1000), interpolation=cv.INTER_AREA)
 
 simpleAddition(img1,img2)
 WeightedAddition(img1,img2)
+Substraction(img1,img2)
