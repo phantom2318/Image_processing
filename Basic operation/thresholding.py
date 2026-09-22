@@ -1,3 +1,4 @@
+####TRY IMAGE OF SPACE ,BINARIFICATION IS WORTH IT.
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
@@ -53,8 +54,6 @@ def AddNoise(image1=None):
      if image1 is None:
            raise FileNotFoundError(f"Could not read image: {f_image1}")
      image1=cv.cvtColor(image1,cv.COLOR_BGR2RGBA)
-
-
 
 ## main Execution 
 file_path = SelectImage()
