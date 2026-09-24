@@ -24,6 +24,20 @@ def RGBHistogram(img:np.ndarray):
     plot.ylabel("number of pixels")
     plot.show()
 
+def GRAY_HistogramEqualiser(img:np.ndarray):
+    img=cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+    GrayHistogram(img)
+    equalised_img=cv.equalizeHist(img)
+    ipr.subplot(img,equalised_img,title1="Original image",title2="Equalised image",cmap1="gray",cmap2="gray")
+    equaliseHist=cv.calcHist([equalised_img],[0],None,[256],[0,255])
+
+    plot.figure()
+    plot.xlabel("Pixel values")
+    plot.ylabel("Number of pixels")
+    plot.title("Equalised Histogram")
+    plot.plot(equaliseHist)
+    plot.show()
+
 path=ipr.select_image()
 img=cv.imread(f"{path}")
 
@@ -32,3 +46,4 @@ if img is None:
 GrayHistogram(cv.cvtColor(img,cv.COLOR_BGR2GRAY))
 RGBHistogram(img)
 ipr.subplot(img,cv.cvtColor(img,cv.COLOR_BGR2GRAY),cmap2="gray")
+GRAY_HistogramEqualiser(img)
