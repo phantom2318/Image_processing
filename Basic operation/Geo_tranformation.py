@@ -26,11 +26,17 @@ def Subplot(image1=None,image2=None):
    if image1 is None:
     f_image1=SelectImage()
     image1=cv.imread(f"{f_image1}")
-    image1=cv.cvtColor(image1,cv.COLOR_BGR2RGBA)
+   if image1 is None:
+      raise FileNotFoundError
+   image1=cv.cvtColor(image1,cv.COLOR_BGR2RGB)
    if image2 is None:
      f_image2=SelectImage()
+     
+     
      image2=cv.imread(f"{f_image2}")
-     image2=cv.cvtColor(image2,cv.COLOR_BGR2RGBA)
+     if image2 is None:
+         raise FileNotFoundError
+     image2=cv.cvtColor(image2,cv.COLOR_BGR2RGB)
 
    plt.subplot(1,2,1)
    plt.imshow(image1)
@@ -44,8 +50,10 @@ def Subplot(image1=None,image2=None):
 def Scalling():
 
       f_image1=SelectImage()
-      
       image1=cv.imread(f"{f_image1}")
+      if image1 is None:
+            raise FileNotFoundError
+      
       x=float(input("enter the value of Horizontal scaling::"))
       y=float(input("enter the value of vertical scaling::"))
       image2=cv.resize(image1,None,fx=x,fy=y,interpolation=cv.INTER_CUBIC)
@@ -58,11 +66,13 @@ def Scalling():
 def Translation():
    PathOfImage1:str=SelectImage()
    image1=cv.imread(f"{PathOfImage1}")
-
+   if image1 is None:
+         raise FileNotFoundError
    rows,cols,c=image1.shape
    x=int(input("enter the value of Horizontal Translation::"))
    y=int(input("enter the value of vertical translation::"))
-   
+   if type(x) is not int or type(y) is not int:
+      raise TypeError
    M=np.float32([[1,0,x],[0,1,y]])
    T_image1=cv.warpAffine(image1,M,(cols,rows))
    image1=cv.cvtColor(image1,cv.COLOR_BGR2RGB)
@@ -71,7 +81,9 @@ def Translation():
 
 def AffineTransformation():
    PathOfImage1:str=SelectImage()
-   image1=cv.imread(f"{PathOfImage1}") 
+   image1=cv.imread(f"{PathOfImage1}")
+   if image1 is None:
+         raise FileNotFoundError 
    rows,cols,c=image1.shape
    pts1 = np.float32([[50,50],
                       [200,50],
@@ -95,7 +107,9 @@ def AffineTransformation():
 """
 def PerspectiveTranformation():
    PathOfImage1:str=SelectImage()
-   image1=cv.imread(f"{PathOfImage1}") 
+   image1=cv.imread(f"{PathOfImage1}")
+   if image1 is None:
+         raise FileNotFoundError 
    rows,cols,c=image1.shape
 
    pts1 = np.float32([[200,65],
