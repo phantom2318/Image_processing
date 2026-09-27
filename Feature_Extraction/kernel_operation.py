@@ -5,32 +5,46 @@ import cv2 as cv
 
 def Define_Kernel()->np.ndarray:
     dim=int(input("Enter the dimension of kernel Array"))
-    kernel=np.ones(dim*dim)
-    kernel=np.reshape(kernel,(dim,dim),"C")
+    kernel=np.zeros((dim,dim))
     return kernel
 
 def Blurring(img:np.ndarray):
     kernel=Define_Kernel()
-    kernel.fill(2/3)
+    kernel.fill(1/9)
     blurred=cv.blur(img,kernel.shape)
     ipr.subplot(img,blurred)
+    save=str(input("Do you want to save the image? (yes/no)"))
+    if save.lower() =="yes":
+        ipr.save_image(blurred,"Blurred image.jpg")
+    else:
+        pass
     return blurred
 def NoiseFiltering(img:np.ndarray):
     kernel=Define_Kernel()
+    kernel.fill(1)
     Filteredimg=cv.filter2D(img,ddepth=-1,kernel=kernel)
     ipr.subplot(img,Filteredimg)
+    save=str(input("Do you want to save the image? (yes/no)"))
+    if save.lower() =="yes":
+        ipr.save_image(Filteredimg,"Noise Filtered image.jpg")
+    else:
+        pass
     
 def Sharpening(img:np.ndarray):
     kernel=Define_Kernel()
     kernel.fill(-1)
     x,y=kernel.shape
-    origin_point=(x+y)/2
     kernel = kernel.flatten()
     origin_point = kernel.size // 2
-    kernel[origin_point]=int(input("Enter the level of Sharpness"))
-    np.reshape(kernel,(x,y),"C")
+    kernel[origin_point]=(x*y)+1
+    kernel=np.reshape(kernel,(x,y),order="F")
     sharpened=cv.filter2D(img,ddepth=-1,kernel=kernel)
     ipr.subplot(img,sharpened,title1="Original",title2="Sharpened")
+    save=str(input("Do you want to save the image? (yes/no)"))
+    if save.lower() =="yes":
+        ipr.save_image(sharpened,"sharpened image.jpg")
+    else:
+        pass
     return sharpened
 
 path=ipr.select_image()
