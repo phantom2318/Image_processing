@@ -54,9 +54,9 @@ if img is None:
     raise FileNotFoundError
 
 print("Enter the choice"
-"\n1.Blurring--->1" 
-"\n2.Sharpening of image--->2"
-"\n5.Exit--->5"
+"\nBlurring--->1" 
+"\nSharpening of image--->2"
+"\nExit--->3"
 )
 
 choice=None
@@ -67,6 +67,9 @@ while(choice!=5):
   Blurring(img)
  elif choice==2:
   Sharpening(img)
- elif choice==5:
+ elif choice==3:
    print("Bye....")
    exit() 
+else:
+   print("Enter valid choice.")
+
