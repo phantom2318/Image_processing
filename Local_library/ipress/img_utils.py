@@ -4,7 +4,7 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 
-__all__ = ["select_image", "subplot"]
+__all__ = ["select_image", "subplot", "save_image"]
 
 
 def select_image() -> str:
@@ -27,6 +27,34 @@ def select_image() -> str:
         sys.exit()
 
     return file_path
+
+
+def save_image(image, default_name="saved_image.png"):
+    """Open a file dialog to choose the save location and save the image."""
+    root = Tk()
+    root.withdraw()
+    root.attributes('-topmost', True)
+
+    file_path = filedialog.asksaveasfilename(
+        title="Save image as",
+        defaultextension=".png",
+        initialfile=default_name,
+        filetypes=[
+            ("PNG files", "*.png"),
+            ("JPEG files", "*.jpg *.jpeg"),
+            ("All files", "*.*"),
+        ],
+    )
+    root.destroy()
+
+    if file_path:
+        success = cv.imwrite(file_path, image)
+        if success:
+            print(f"Image saved successfully to {file_path}")
+        else:
+            print(f"Failed to save image to {file_path}")
+    else:
+        print("Save operation cancelled.")
 
 
 def subplot(
