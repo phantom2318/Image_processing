@@ -2,11 +2,12 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-5.x%20%2F%204.x-green.svg)](https://opencv.org/)
+[![scikit-image](https://img.shields.io/badge/scikit--image-0.21%2B-orange.svg)](https://scikit-image.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A hands-on collection of fundamental image processing and computer vision techniques implemented in Python using OpenCV, NumPy, and Matplotlib. 
+A comprehensive, modular collection of computer vision and digital image processing algorithms implemented in Python using **OpenCV**, **NumPy**, **Matplotlib**, and **scikit-image**.
 
-This repository also includes **`ipress`**, a custom local utility library created to streamline common computer vision tasks like interactive GUI image selection and side-by-side Matplotlib plotting.
+This repository covers foundational pixel operations, spatial filtering, edge detection, color space conversions, feature extraction (histograms, CDF equalization, GLCM, custom convolution kernels), and includes a custom local helper package called **`ipress`** to streamline GUI file picking, saving, and side-by-side visualization.
 
 ---
 
@@ -15,50 +16,95 @@ This repository also includes **`ipress`**, a custom local utility library creat
 ```text
 Image_processing/
 ├── .vscode/
-│   └── settings.json           # Configures Pylance extraPaths for the local library
+│   └── settings.json               # Configures Pylance extraPaths for local library
 ├── Basic operation/
-│   ├── Arithmatic_operation.py # Image addition and weighted blending
-│   ├── Color_generation.py     # Color spaces, canvas creation & display
-│   ├── drawing.py              # Geometric shapes, lines, and annotations
-│   ├── Geo_tranformation.py    # Rotation, scaling, translation & perspective
-│   ├── Operation_of_Images.py  # Pixel manipulation, slicing, ROI, channel split/merge
-│   └── thresholding.py         # Binary, adaptive, and Otsu thresholding
+│   ├── Arithmatic_operation.py     # Simple pixel addition and weighted alpha blending
+│   ├── Color_generation.py         # Custom RGB array synthesis and display
+│   ├── drawing.py                  # Geometric shapes, lines, and annotations
+│   ├── Edge_Detection.py           # Sobel, Laplacian, and Canny edge detection
+│   ├── Filtering.py                # Mean, Gaussian, Median, and Bilateral smoothing
+│   ├── Geo_tranformation.py        # Rotation, scaling, affine & perspective transforms
+│   ├── masking.py                  # Bitwise masking and masked histogram analysis
+│   ├── Operation_of_Images.py      # Pixel access, ROI cropping, channel split/merge
+│   └── thresholding.py             # Binary, adaptive, and Otsu thresholding
+├── Feature_Extraction/
+│   ├── GLCM.py                     # Gray-Level Co-occurrence Matrix texture analysis
+│   ├── histogram.py                # Grayscale/RGB histograms and full CDF equalization
+│   └── kernel_operation.py         # Dynamic 2D convolution, blurring & sharpening
+├── Image Formats/
+│   └── Color_Scale.py              # Conversions: BGR, Gray, YCrCb, YUV, HSV, HLS, LAB
 ├── Local_library/
 │   ├── ipress/
-│   │   ├── __init__.py         # Package exports
-│   │   └── img_utils.py        # Dialog picker & side-by-side subplot visualizer
-│   └── pyproject.toml          # PEP 621 package configuration for ipress
-├── .gitignore                  # Ignores pycache, build artifacts, environments
-├── LICENSE                     # MIT License
-├── README.md                   # Project documentation
-└── requirements.txt            # Project dependencies
+│   │   ├── __init__.py             # Exports: select_image, save_image, subplot
+│   │   └── img_utils.py            # Dialog picker, file saver, and subplot visualizer
+│   └── pyproject.toml              # PEP 621 package configuration for ipress
+├── .gitignore                      # Python, packaging, cache, and OS ignore rules
+├── LICENSE                         # MIT License
+├── README.md                       # Project documentation
+└── requirements.txt                # Project dependencies
 ```
 
 ---
 
-## 📦 The `ipress` Library
+## 📦 The `ipress` Helper Library
 
-The repository includes a custom utility package located in [`Local_library`](Local_library/). It eliminates boilerplate code across your image processing scripts:
+Located in [`Local_library/`](Local_library/), **`ipress`** is a custom package designed to remove repetitive boilerplate across image processing workflows:
 
-### Key Utilities:
-- **`select_image() -> str`**: Opens a native OS file dialog (with topmost focus) allowing you to browse and select image files (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`).
-- **`subplot(image1, image2, ...)`**: Plots two images side-by-side using Matplotlib. Automatically handles BGR-to-RGB color space conversion, supports colormaps (e.g. `cmap="gray"`), custom titles, and falls back to interactive file selection if an image argument is omitted.
+### Key Functions
+- **`select_image() -> str`**: Launches an OS-native file dialog (with topmost focus) to choose an image (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.webp`).
+- **`save_image(image, default_name="saved_image.png")`**: Opens a native "Save As" file dialog to export processed images directly to disk.
+- **`subplot(image1, image2, cmap1=None, cmap2=None, title1="Image-1", title2="Image-2")`**: Displays two images side-by-side using Matplotlib. Automatically handles BGR-to-RGB conversion, accepts custom colormaps (e.g. `cmap="gray"`), and triggers the file selector automatically if either image argument is omitted.
 
-### Quick Example:
+### Usage Example
 ```python
 import ipress as ipr
 import cv2 as cv
 
-# Interactively select an image using file dialog
+# 1. Interactive file selection
 path = ipr.select_image()
 img = cv.imread(path)
 
-# Perform any OpenCV operation
+# 2. Perform an operation (e.g. Gaussian Blur)
 blurred = cv.GaussianBlur(img, (15, 15), 0)
 
-# Display original and processed image side-by-side
+# 3. Side-by-side comparison
 ipr.subplot(img, blurred, title1="Original", title2="Gaussian Blur")
+
+# 4. Save processed output
+ipr.save_image(blurred, default_name="blurred_output.png")
 ```
+
+---
+
+## 🧪 Modules & Features
+
+### 1. Basic Operations ([`Basic operation/`](Basic%20operation/))
+
+| Script | Topics Covered | Key OpenCV / NumPy Methods |
+|---|---|---|
+| [`Arithmatic_operation.py`](Basic%20operation/Arithmatic_operation.py) | Pixel-wise addition, weighted alpha blending | `cv.add`, `cv.addWeighted`, `cv.resize` |
+| [`Color_generation.py`](Basic%20operation/Color_generation.py) | Custom RGB color canvas synthesis | `np.full`, `cv.cvtColor` |
+| [`drawing.py`](Basic%20operation/drawing.py) | Drawing lines, rectangles, circles, text | `cv.line`, `cv.circle`, `cv.rectangle`, `cv.putText` |
+| [`Edge_Detection.py`](Basic%20operation/Edge_Detection.py) | First & second derivative edge detectors | `cv.Sobel`, `cv.Laplacian`, `cv.Canny`, `cv.bilateralFilter` |
+| [`Filtering.py`](Basic%20operation/Filtering.py) | Linear & non-linear smoothing / denoising | `cv.blur`, `cv.GaussianBlur`, `cv.medianBlur`, `cv.bilateralFilter` |
+| [`Geo_tranformation.py`](Basic%20operation/Geo_tranformation.py) | Scaling, rotation, affine, perspective warp | `cv.warpAffine`, `cv.getRotationMatrix2D`, `cv.getPerspectiveTransform` |
+| [`masking.py`](Basic%20operation/masking.py) | Bitwise ROI masking & masked histograms | `cv.bitwise_and`, `cv.rectangle`, `cv.calcHist` |
+| [`Operation_of_Images.py`](Basic%20operation/Operation_of_Images.py) | Pixel indexing, ROI slicing, channel splitting | `cv.split`, `cv.merge`, NumPy array slicing |
+| [`thresholding.py`](Basic%20operation/thresholding.py) | Global, Adaptive (Mean/Gaussian), Otsu | `cv.threshold`, `cv.adaptiveThreshold` |
+
+### 2. Feature Extraction ([`Feature_Extraction/`](Feature_Extraction/))
+
+| Script | Description | Highlights |
+|---|---|---|
+| [`GLCM.py`](Feature_Extraction/GLCM.py) | **Gray-Level Co-occurrence Matrix**: Texture feature extraction across multiple distances and angular orientations ($0, \pi/5, \pi/3, \pi/2, \pi$). | Uses `skimage.feature.graycomatrix` to quantify spatial relationships between pixel intensities. |
+| [`histogram.py`](Feature_Extraction/histogram.py) | **Histogram Analysis & Equalization**: Generates 1D intensity and 3-channel RGB histograms, standard grayscale equalization, and manual 3-channel RGB equalization using cumulative distribution functions (CDF). | `cv.calcHist`, `cv.equalizeHist`, `np.cumsum`, `np.ma.masked_equal`. |
+| [`kernel_operation.py`](Feature_Extraction/kernel_operation.py) | **Custom 2D Spatial Filtering**: Interactive kernel builder supporting dynamic dimension input for custom box blurring, uniform noise filtering, and high-pass sharpening filters. | `cv.filter2D`, dynamic matrix operations, integrated with `ipr.save_image()`. |
+
+### 3. Image Formats & Color Spaces ([`Image Formats/`](Image%20Formats/))
+
+| Script | Description | Supported Color Spaces |
+|---|---|---|
+| [`Color_Scale.py`](Image%20Formats/Color_Scale.py) | Interactive color space conversion and comparative visualizer. | **BGR**, **GRAY**, **YCrCb**, **YUV**, **HSV / HSV_FULL**, **HLS / HLS_FULL**, and **CIE LAB**. |
 
 ---
 
@@ -87,7 +133,7 @@ pip install -r requirements.txt
 ```
 
 ### 4. Install the Local `ipress` Package in Editable Mode
-Installing with `-e` ensures that any modifications made to `Local_library/ipress` take effect immediately without reinstalling:
+Installing with `-e` ensures that any edits made to `Local_library/ipress` take effect immediately across all scripts without reinstalling:
 ```bash
 pip install -e Local_library
 ```
@@ -96,42 +142,32 @@ pip install -e Local_library
 
 ---
 
-## 🧪 Modules & Operations Covered
-
-| Script | Topics Covered | Key OpenCV Functions |
-|---|---|---|
-| [`Arithmatic_operation.py`](Basic%20operation/Arithmatic_operation.py) | Arithmetic Addition, Alpha Blending | `cv.add`, `cv.addWeighted`, `cv.resize` |
-| [`Color_generation.py`](Basic%20operation/Color_generation.py) | Custom Color Generation, Pixel Arrays | `cv.cvtColor`, `np.full` |
-| [`drawing.py`](Basic%20operation/drawing.py) | Drawing Primitives | `cv.line`, `cv.circle`, `cv.rectangle`, `cv.putText` |
-| [`Geo_tranformation.py`](Basic%20operation/Geo_tranformation.py) | Affine, Scaling, Rotation, Perspective | `cv.warpAffine`, `cv.getRotationMatrix2D`, `cv.resize` |
-| [`Operation_of_Images.py`](Basic%20operation/Operation_of_Images.py) | Region of Interest (ROI), Channel Operations | `cv.split`, `cv.merge`, array slicing |
-| [`thresholding.py`](Basic%20operation/thresholding.py) | Binary, Adaptive, and Otsu Thresholding | `cv.threshold`, `cv.adaptiveThreshold` |
-
----
-
 ## 🛠️ Running the Scripts
 
-Run any script directly from the project root:
+Run any module directly from the terminal. Most scripts offer an interactive menu and launch a GUI file chooser:
 
 ```bash
-# Example: Run arithmetic blending operations
-python "Basic operation/Arithmatic_operation.py"
+# 1. Run color space conversions
+python "Image Formats/Color_Scale.py"
 
-# Example: Run geometric transformation experiments
-python "Basic operation/Geo_tranformation.py"
+# 2. Run histogram analysis and equalization
+python "Feature_Extraction/histogram.py"
+
+# 3. Run texture analysis via GLCM
+python "Feature_Extraction/GLCM.py"
+
+# 4. Run edge detection experiments
+python "Basic operation/Edge_Detection.py"
 ```
-
-When prompted, select image file(s) via the GUI file picker to view the results.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/phantom2318/Image_processing/issues).
+Contributions, questions, and feature suggestions are welcome! Feel free to open an issue or submit a pull request on the [GitHub repository](https://github.com/phantom2318/Image_processing).
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
