@@ -3,12 +3,11 @@ import numpy as np
 import ipress as ipr
 from skimage import feature as sk
 
-
 def CalculateGLCM(img:np.ndarray):
     img=cv.cvtColor(img,cv.COLOR_BGR2GRAY)
     x=int(input("Enter The number of angle::"))
     angle=np.zeros(x)
-    dst=int(input("Enter the distance from thr origin pixel::"))
+    dst=int(input("Enter the distance from the origin pixel::"))
     for i in range(x):
         angle[i]=int(input("Enter the value of angle::"))
         angle[i]=np.radians(angle[i])
@@ -26,9 +25,11 @@ def CompareGLCM(img1:np.ndarray,img2:np.ndarray):
     correlation_1,correlation_2=sk.graycoprops(GLCM_1,"correlation"),sk.graycoprops(GLCM_2,"correlation")
     homogeneity_1,homogeneity_2=sk.graycoprops(GLCM_1,"homogeneity"),sk.graycoprops(GLCM_2,"homogeneity")
     energy_1,energy_2=sk.graycoprops(GLCM_1,"energy"),sk.graycoprops(GLCM_2,"energy")
+    entropy_1,entropy_2=sk.graycoprops(GLCM_1,"entropy"),sk.graycoprops(GLCM_2,prop="entropy")
     print(f"Contrast 1: {contrast_1} Contrast 2: {contrast_2} \n\n"
       f"correlation 1: {correlation_1} correlation 2: {correlation_2}\n\n"
       f"homogeneity 1: {homogeneity_1} homogeneity 2 {homogeneity_2}\n\n"
+      f"entropy 1: {entropy_1} entropy 2 {entropy_2}\n\n"
       f"energy 1: {energy_1} energy 2: {energy_2}\n\n")
 
 path1 = ipr.select_image()
